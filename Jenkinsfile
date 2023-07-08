@@ -58,7 +58,15 @@ stage('Creation livrable'){
    steps {
      sh "mvn test"
  }*/
- 
+ stage("Deployment stage") {
+            steps {
+                script {
+                pom = readMavenPom file: 'pom.xml'
+                   echo "${pom.artifactId}-${pom.version}.${pom.packaging}"
+                   sh "mvn deploy:deploy-file  -DskipTests=true -DgroupId=${pom.groupId} -DartifactId=${pom.artifactId} -Dversion=${pom.version}  -DgeneratePom=true -Dpackaging=${pom.packaging}  -DrepositoryId=deploymentRepo -Durl=http://localhost:8081/repository/maven-releases/ -Dfile=target/${pom.artifactId}-${pom.version}.${pom.packaging}"
+                }
+            }
+        }
  } 
  
  
